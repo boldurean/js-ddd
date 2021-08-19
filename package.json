@@ -1,7 +1,7 @@
 {
-  "name": "nodejs-temaplte",
+  "name": "js-ddd",
   "version": "1.0.0",
-  "description": "nodejs-boilerplate",
+  "description": "Design Driven Development lecture",
   "main": "index.js",
   "directories": {
     "test": "__tests__"
@@ -14,14 +14,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/bdnvsy/nodejs-template.git"
+    "url": "git+https://github.com/boldurean/js-ddd.git"
   },
   "author": "Vasilii Boldurean",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/bdnvsy/nodejs-template/issues"
+    "url": "https://github.com/boldurean/js-ddd.git/issues"
   },
-  "homepage": "https://github.com/bdnvsy/nodejs-template#readme",
+  "homepage": "https://github.com/boldurean/js-ddd.git#readme",
   "type": "module",
   "jest": {
     "testEnvironment": "node",
@@ -38,6 +38,7 @@
   },
   "dependencies": {
     "debug": "^4.3.1",
-    "lodash": "^4.17.20"
+    "lodash": "^4.17.21",
+    "uuid": "^8.3.2"
   }
 }
