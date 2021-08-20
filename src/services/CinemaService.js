@@ -1,5 +1,3 @@
-// @ts-check
-
 import ApplicationService from './ApplicationService.js';
 
 export default class CinemaService extends ApplicationService {
@@ -19,19 +17,5 @@ export default class CinemaService extends ApplicationService {
       this.repositories.film.save(film);
     }
     return [film, errors];
-  }
-
-  createFilmScreening(filmId, cinemaHallId, time) {
-    const film = this.repositories.film.find(filmId);
-    const cinemaHall = this.repositories.cinemaHall.find(cinemaHallId);
-
-    const filmScreening = new this.entities.FilmScreening(film, cinemaHall, time);
-
-    const errors = this.validate(filmScreening);
-    if (!errors) {
-      this.repositories.filmScreening.save(filmScreening);
-    }
-
-    return [filmScreening, errors];
   }
 }

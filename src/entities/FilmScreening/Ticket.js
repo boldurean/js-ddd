@@ -8,12 +8,14 @@ export default class FilmScreeningTicket extends ApplicationEntity {
       .uniqueness({ scope: ['place'] }),
     user: yup.mixed().required(),
     place: yup.mixed().required(),
+    cost: yup.number().strict().required().min(0),
   });
 
   constructor(filmScreening, user, place) {
     super();
     this.id = uuid();
     this.filmScreening = filmScreening;
+    this.cost = filmScreening.cost;
     this.user = user;
     this.place = place;
     this.createdAt = new Date();

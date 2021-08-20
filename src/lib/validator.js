@@ -1,7 +1,7 @@
-// @ts-check
-
 import _ from 'lodash';
 import * as yup from 'yup';
+
+import BaseEntity from './BaseEntity';
 
 const toObject = (validationError) => {
   const { inner } = validationError;
@@ -26,8 +26,9 @@ yup.addMethod(yup.mixed, 'uniqueness', function method(options) {
       const scope = _.get(options, 'scope', []);
       const params = { [path]: value, ..._.pick(parent, scope) };
       const result = repository.findBy(params);
+      const isEntity = result instanceof BaseEntity;
 
-      if (result && result.id !== parent.id) {
+      if (result || (isEntity && result.id !== parent.id)) {
         return createError({ message: `${path} already exists` });
       }
 
@@ -36,11 +37,11 @@ yup.addMethod(yup.mixed, 'uniqueness', function method(options) {
   });
 });
 
-const generateValidator = (repositories) => {
+const generateValidator = ({ repositories }) => {
   const entityValidator = (entity) => {
     const { schema } = entity.constructor;
     const className = entity.constructor.name;
-    const repository = repositories[`${className}Repository`];
+    const repository = repositories[_.lowerFirst(className)];
 
     let errors;
     try {

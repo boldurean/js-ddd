@@ -15,6 +15,5 @@ export default class CinemaHall extends ApplicationEntity {
     this.name = name;
     this.rows = rows;
     this.cols = cols;
-    this.createdAt = new Date();
   }
 }

@@ -21,7 +21,6 @@ export default () => {
 
   bottle.factory('entities', () => entities);
 
-  // BEGIN (write your solution here)
   bottle.factory('validate', generateValidator);
 
   bottle.factory('services', (container) => {
@@ -43,5 +42,4 @@ export default () => {
   });
 
   return bottle.container;
-  // END
 };

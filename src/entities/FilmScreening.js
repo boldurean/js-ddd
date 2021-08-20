@@ -6,15 +6,16 @@ export default class FilmScreening extends ApplicationEntity {
   static schema = yup.object({
     film: yup.mixed().required(),
     cinemaHall: yup.mixed().required(),
-    time: yup.mixed().required(),
+    time: yup.date().strict().required(),
+    cost: yup.number().strict().required(),
   });
 
-  constructor(film, cinemaHall, time) {
+  constructor(film, cinemaHall, time, cost) {
     super();
     this.id = uuid();
     this.film = film;
     this.cinemaHall = cinemaHall;
     this.time = time;
-    this.createdAt = new Date();
+    this.cost = cost;
   }
 }
