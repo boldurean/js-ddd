@@ -1,5 +1,9 @@
-import Film from './Film.js';
+import Film from './Film';
+import User from './User.js';
 import CinemaHall from './CinemaHall.js';
 import FilmScreening from './FilmScreening.js';
+import FilmScreeningTicket from './FilmScreening/Ticket.js';
 
-export { Film, CinemaHall, FilmScreening };
+export {
+  User, Film, CinemaHall, FilmScreening, FilmScreeningTicket,
+};

@@ -1,19 +1,22 @@
-// @ts-check
-
 import CinemaService from '../src/services/CinemaService.js';
 import * as repositories from '../src/repositories/index.js';
+import generateValidator from '../src/lib/validator.js';
 
 describe('CinemaService', () => {
   let service;
 
   beforeEach(() => {
-    const repositoryInstances = Object.keys(repositories).reduce((acc, name) => (
-      { [name]: new repositories[name](), ...acc }), {});
-    service = new CinemaService(repositoryInstances);
+    const repositoryInstances = Object.keys(repositories)
+      .reduce(
+        (acc, name) => ({ [name]: new repositories[name](), ...acc }),
+        {},
+      );
+    const validate = generateValidator(repositoryInstances);
+    service = new CinemaService(repositoryInstances, validate);
   });
 
   it('createFilm', () => {
-    const film = service.createFilm('first glance', 100);
+    const [film] = service.createFilm('first glance', 100);
     const expected = {
       name: 'first glance',
       duration: 100,
@@ -21,8 +24,17 @@ describe('CinemaService', () => {
     expect(film).toMatchObject(expected);
   });
 
+  it('createFilm (errors)', () => {
+    const [, errors] = service.createFilm();
+    const expected = {
+      name: ['name is a required field'],
+      duration: ['duration is a required field'],
+    };
+    expect(errors).toMatchObject(expected);
+  });
+
   it('createCinemaHall', () => {
-    const cinemaHall = service.createCinemaHall('first', 5, 5);
+    const [cinemaHall] = service.createCinemaHall('first', 5, 5);
     const expected = {
       name: 'first',
       rows: 5,
@@ -31,18 +43,30 @@ describe('CinemaService', () => {
     expect(cinemaHall).toMatchObject(expected);
   });
 
+  it('createCinemaHall (errors)', () => {
+    const [, errors] = service.createCinemaHall();
+    const expected = {
+      name: ['name is a required field'],
+    };
+    expect(errors).toMatchObject(expected);
+  });
+
   it('createFilmScreening', () => {
     const time = new Date();
-    const film = service.createFilm('the game', 200);
-    const cinemaHall = service.createCinemaHall('first', 5, 5);
-    const filmScreening = service.createFilmScreening(film.id, cinemaHall.id, time);
+    const [film] = service.createFilm('first glance', 100);
+    const [cinemaHall] = service.createCinemaHall('first', 5, 5);
+    const [filmScreening] = service.createFilmScreening(film.id, cinemaHall.id, time);
 
     const expected = {
-      film,
-      cinemaHall,
+      // film,
+      // cinemaHall,
       time,
     };
     expect(filmScreening).toMatchObject(expected);
   });
-});
 
+  it('createFilmScreening (errors)', () => {
+    const f = () => service.createFilmScreening();
+    expect(f).toThrow();
+  });
+});

@@ -1,9 +1,13 @@
-import CinemaHallRepository from './CinemaHallRepository.js';
-import FilmRepository from './FilmRepository.js';
 import FilmScreeningRepository from './FilmScreeningRepository.js';
+import UserRepository from './UserRepository.js';
+import FilmScreeningTicketRepository from './FilmScreening/TicketRepository.js';
+import FilmRepository from './FilmRepository.js';
+import CinemaHallRepository from './CinemaHallRepository.js';
 
 export {
-  CinemaHallRepository,
-  FilmRepository,
+  UserRepository,
   FilmScreeningRepository,
+  FilmScreeningTicketRepository,
+  FilmRepository,
+  CinemaHallRepository,
 };
