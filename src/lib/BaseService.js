@@ -1,8 +1,7 @@
 export default class BaseService {
-  constructor(repositories, validate) {
+  constructor({ repositories, entities, validate }) {
+    this.repositories = repositories;
+    this.entities = entities;
     this.validate = validate;
-    Object.keys(repositories).forEach((name) => {
-      this[name] = repositories[name];
-    });
   }
 }

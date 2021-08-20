@@ -1,13 +1,13 @@
-import FilmScreeningRepository from './FilmScreeningRepository.js';
-import UserRepository from './UserRepository.js';
-import FilmScreeningTicketRepository from './FilmScreening/TicketRepository.js';
-import FilmRepository from './FilmRepository.js';
-import CinemaHallRepository from './CinemaHallRepository.js';
+import FilmScreening from './FilmScreeningRepository.js';
+import Film from './FilmRepository.js';
+import CinemaHall from './CinemaHallRepository.js';
+import User from './UserRepository.js';
+import FilmScreeningTicket from './FilmScreening/TicketRepository.js';
 
-export {
-  UserRepository,
-  FilmScreeningRepository,
-  FilmScreeningTicketRepository,
-  FilmRepository,
-  CinemaHallRepository,
+export default {
+  FilmScreening,
+  FilmScreeningTicket,
+  Film,
+  CinemaHall,
+  User,
 };

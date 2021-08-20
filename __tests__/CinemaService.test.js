@@ -1,18 +1,12 @@
-import CinemaService from '../src/services/CinemaService.js';
-import * as repositories from '../src/repositories/index.js';
-import generateValidator from '../src/lib/validator.js';
+// @flow
+
+import cinemaManager from '../src/index.js';
 
 describe('CinemaService', () => {
   let service;
-
   beforeEach(() => {
-    const repositoryInstances = Object.keys(repositories)
-      .reduce(
-        (acc, name) => ({ [name]: new repositories[name](), ...acc }),
-        {},
-      );
-    const validate = generateValidator(repositoryInstances);
-    service = new CinemaService(repositoryInstances, validate);
+    const app = cinemaManager();
+    service = app.services.cinema;
   });
 
   it('createFilm', () => {
@@ -27,8 +21,8 @@ describe('CinemaService', () => {
   it('createFilm (errors)', () => {
     const [, errors] = service.createFilm();
     const expected = {
-      name: ['name is a required field'],
       duration: ['duration is a required field'],
+      name: ['name is a required field'],
     };
     expect(errors).toMatchObject(expected);
   });
@@ -58,8 +52,8 @@ describe('CinemaService', () => {
     const [filmScreening] = service.createFilmScreening(film.id, cinemaHall.id, time);
 
     const expected = {
-      // film,
-      // cinemaHall,
+      film,
+      cinemaHall,
       time,
     };
     expect(filmScreening).toMatchObject(expected);

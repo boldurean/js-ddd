@@ -1,33 +1,37 @@
+// @ts-check
+
 import ApplicationService from './ApplicationService.js';
-import { Film, FilmScreening, CinemaHall } from '../entities/index.js';
 
 export default class CinemaService extends ApplicationService {
   createCinemaHall(name, rows, cols) {
-    const cinemaHall = new CinemaHall(name, rows, cols);
+    const cinemaHall = new this.entities.CinemaHall(name, rows, cols);
     const errors = this.validate(cinemaHall);
     if (!errors) {
-      this.CinemaHallRepository.save(cinemaHall);
+      this.repositories.cinemaHall.save(cinemaHall);
     }
     return [cinemaHall, errors];
   }
 
   createFilm(name, duration) {
-    const film = new Film(name, duration);
+    const film = new this.entities.Film(name, duration);
     const errors = this.validate(film);
     if (!errors) {
-      this.FilmRepository.save(film);
+      this.repositories.film.save(film);
     }
     return [film, errors];
   }
 
   createFilmScreening(filmId, cinemaHallId, time) {
-    const film = this.FilmRepository.find(filmId);
-    const hall = this.CinemaHallRepository.find(cinemaHallId);
-    const filmScreening = new FilmScreening(film, hall, time);
+    const film = this.repositories.film.find(filmId);
+    const cinemaHall = this.repositories.cinemaHall.find(cinemaHallId);
+
+    const filmScreening = new this.entities.FilmScreening(film, cinemaHall, time);
+
     const errors = this.validate(filmScreening);
     if (!errors) {
-      this.FilmScreeningRepository.save(filmScreening);
+      this.repositories.filmScreening.save(filmScreening);
     }
+
     return [filmScreening, errors];
   }
 }
