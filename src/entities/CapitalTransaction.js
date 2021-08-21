@@ -3,17 +3,28 @@ import { yup } from '../lib/validator.js';
 import ApplicationEntity from './ApplicationEntity.js';
 
 export default class CapitalTransaction extends ApplicationEntity {
-  static scheme = yup.object({
+  static types = ['income', 'loss'];
+
+  static schema = yup.object({
     ticket: yup.mixed().required(),
-    cost: yup.number().required(),
+    cost: yup.number().strict().required(),
+    type: yup.mixed().required().oneOf(CapitalTransaction.types),
   });
 
-  constructor(ticket) {
+  constructor(ticket, type) {
     super();
     this.id = uuid();
     this.ticket = ticket;
-    this.cost = ticket.cost;
+    this.type = type;
     this.createdAt = new Date();
+
+    switch (type) {
+      case 'income':
+        this.cost = ticket.cost;
+        break;
+      case 'loss':
+        this.cost = -ticket.cost;
+        break;
+    }
   }
 }
-

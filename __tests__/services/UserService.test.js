@@ -1,12 +1,10 @@
-// @ts-check
-
 import cinemaManager from '../../src/index.js';
 
 describe('UserService', () => {
   let service;
   beforeEach(() => {
     const app = cinemaManager();
-    service = app.services.userService;
+    service = app.services.user;
   });
 
   it('createUser', () => {

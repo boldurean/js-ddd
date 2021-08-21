@@ -1,44 +1,28 @@
-// @ts-check
-
-import Bottle from 'bottlejs';
 import _ from 'lodash';
-import entities from './entities/index.js';
-import generateValidator from './lib/validator.js';
-import repositories from './repositories/index.js';
+import Bottle from 'bottlejs';
 import services from './services/index.js';
+import entities from './entities/index.js';
+import repositories from './repositories/index.js';
+import generateValidator from './lib/validator.js';
 
 export default () => {
   const bottle = new Bottle();
   bottle.factory('repositories', () => {
-    return Object.keys(repositories)
-      .reduce((acc, repoName) => (
-        {
-          ...acc,
-          [_.lowerFirst(repoName)]: new repositories[repoName]()
-        }
-      ), {});
+    const result = Object.keys(repositories).reduce((acc, repoName) => (
+      { ...acc, [_.lowerFirst(repoName)]: new repositories[repoName]() }
+    ), {});
+    return result;
   });
 
   bottle.factory('entities', () => entities);
-
-  bottle.factory('validate', generateValidator);
+  bottle.factory('validate', (container) => generateValidator(container));
 
   bottle.factory('services', (container) => {
-    const repositories = container.repositories;
-    const entities = container.entities;
-    const validate = container.validate;
-
-    return Object.keys(services)
-      .reduce((acc, serviceName) => (
-        {
-          ...acc,
-          [_.lowerFirst(serviceName)]: new services[serviceName]({
-            repositories,
-            entities,
-            validate
-          })
-        }
-      ), {});
+    const result = Object.keys(services).reduce((acc, serviceName) => {
+      const service = new services[serviceName](container);
+      return { ...acc, [_.lowerFirst(serviceName)]: service };
+    }, {});
+    return result;
   });
 
   return bottle.container;

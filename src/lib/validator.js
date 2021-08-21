@@ -24,7 +24,8 @@ yup.addMethod(yup.mixed, 'uniqueness', function method(options) {
       const { path, createError, parent } = this;
       const { repository } = this.options.context;
       const scope = _.get(options, 'scope', []);
-      const params = { [path]: value, ..._.pick(parent, scope) };
+      const conditions = _.get(options, 'conditions', {});
+      const params = { [path]: value, ...conditions, ..._.pick(parent, scope) };
       const result = repository.findBy(params);
       const isEntity = result instanceof BaseEntity;
 

@@ -10,19 +10,19 @@ describe('MoneyService', () => {
 
   beforeEach(() => {
     const app = cinemaManager();
-    ({ services, repositories } = app);
+    services = app.services;
+    repositories = app.repositories;
     const email = 'etst@email.com';
-    [user] = services.userService.createUser(email);
-    [film] = services.cinemaService.createFilm('first glance', 100);
-    [cinemaHall] = services.cinemaService.createCinemaHall('first', 5, 5);
-    services.moneyService.createPrice(cinemaHall.id, 100);
-    [filmScreening] = services.moneyService
+    [user] = services.user.createUser(email);
+    [film] = services.cinema.createFilm('first glance', 100);
+    [cinemaHall] = services.cinema.createCinemaHall('first', 5, 5);
+    services.money.createPrice(cinemaHall.id, 100);
+    [filmScreening] = services.money
       .createFilmScreening(film.id, cinemaHall.id, new Date());
-    services.moneyService.createPrice(cinemaHall.id, 100);
   });
 
   it('createPrice', () => {
-    const [price] = services.moneyService.createPrice(cinemaHall.id, 200);
+    const [price] = services.money.createPrice(cinemaHall.id, 200);
     const expected = {
       value: 200,
     };
@@ -30,57 +30,69 @@ describe('MoneyService', () => {
     expect(price).toMatchObject(expected);
   });
 
-  it('createFilmScreening (errors)', () => {
-    const f = () => services.moneyService.createFilmScreening();
-    expect(f).toThrow();
-  });
-
-  it('createFilmScreening', () => {
-    const time = new Date();
-    const [localFilmScreening] = services.moneyService
-      .createFilmScreening(film.id, cinemaHall.id, time);
-    const expected = {
-      // film,
-      // cinemaHall,
-      time,
-    };
-    expect(localFilmScreening).toMatchObject(expected);
-    const fs = repositories.filmScreening.find(localFilmScreening.id);
-    expect(localFilmScreening).toMatchObject(fs);
-  });
-
   it('buyTicket', () => {
     const place = { row: 5, col: 3 };
-    const [ticket] = services.moneyService.buyTicket(user.id, filmScreening.id, place);
-    const capital = repositories.capitalTransaction.findBy({ ticket });
+    const [ticket] = services.money.buyTicket(user.id, filmScreening.id, place);
+    const capitalTransaction = repositories.capitalTransaction.findBy({ ticket });
     const ticketExpected = {
       place,
     };
 
     expect(ticket).toMatchObject(ticketExpected);
-
-    const capitalExpected = {
-      ticket,
-    };
-    expect(capital).toMatchObject(capitalExpected);
+    expect(capitalTransaction).toHaveProperty('ticket', ticket);
   });
 
   it('buyTicket (errors)', () => {
-    const f = () => services.moneyService.buyTicket();
+    const f = () => services.money.buyTicket();
 
     expect(f).toThrow();
   });
 
   it('buyTicket with double reservation', () => {
     const place = { row: 5, col: 3 };
-    services.moneyService.buyTicket(user.id, filmScreening.id, place);
-    const [, errors] = services.moneyService.buyTicket(user.id, filmScreening.id, place);
+    services.money.buyTicket(user.id, filmScreening.id, place);
+    const [, errors] = services.money.buyTicket(user.id, filmScreening.id, place);
     const expected = {
       filmScreening: [
         'filmScreening already exists',
       ],
     };
     expect(errors).toMatchObject(expected);
+  });
+
+  it('refundTicket', () => {
+    const place = { row: 5, col: 3 };
+    const [ticket] = services.money.buyTicket(user.id, filmScreening.id, place);
+    const isRefunded = services.money.refundTicket(ticket.id);
+    expect(isRefunded).toBe(true);
+    expect(ticket).toMatchObject({ _fsm: { state: 'returned' } });
+
+    const capitalTransactions = repositories.capitalTransaction.findAllBy({ ticket });
+    expect(capitalTransactions).toHaveLength(2);
+    expect(capitalTransactions.reduce((acc, { cost }) => acc + cost, 0)).toBe(0);
+
+    services.money.refundTicket(ticket.id);
+
+    const capitalTransactions2 = repositories.capitalTransaction.findAllBy({ ticket });
+    expect(capitalTransactions2).toHaveLength(2);
+    expect(capitalTransactions2.reduce((acc, { cost }) => acc + cost, 0)).toBe(0);
+  });
+
+  it('createFilmScreening', () => {
+    const time = new Date();
+    const [localFilmScreening] = services.money.createFilmScreening(film.id, cinemaHall.id, time);
+
+    const expected = {
+      // film,
+      // cinemaHall,
+      time,
+    };
+    expect(localFilmScreening).toMatchObject(expected);
+  });
+
+  it('createFilmScreening (errors)', () => {
+    const f = () => services.money.createFilmScreening();
+    expect(f).toThrow();
   });
 });
 

@@ -1,9 +1,9 @@
-import CinemaService from './CinemaService.js';
-import MoneyService from './MoneyService.js';
-import UserService from './UserService.js';
+import Cinema from './CinemaService.js';
+import Money from './MoneyService.js';
+import User from './UserService.js';
 
 export default {
-  CinemaService,
-  MoneyService,
-  UserService,
+  Cinema,
+  Money,
+  User,
 };

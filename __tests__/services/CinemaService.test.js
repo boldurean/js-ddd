@@ -1,12 +1,10 @@
-// @ts-check
-
 import cinemaManager from '../../src/index.js';
 
 describe('CinemaService', () => {
   let service;
   beforeEach(() => {
     const app = cinemaManager();
-    service = app.services.cinemaService;
+    service = app.services.cinema;
   });
 
   it('createFilm', () => {
